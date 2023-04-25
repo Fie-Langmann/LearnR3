@@ -13,3 +13,5 @@ mean(2:6) # ctrl+shift+p --> style --> style_active_file (will alter the whole f
 # Loading packages --------------------------------------------------------
 
 library(tidyverse)
+
+#This will be used for testing out Git
