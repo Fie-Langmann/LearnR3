@@ -15,3 +15,6 @@ mean(2:6) # ctrl+shift+p --> style --> style_active_file (will alter the whole f
 library(tidyverse)
 
 #This will be used for testing out Git
+
+
+#Testing pull-push to GitHub
