@@ -19,4 +19,5 @@ library(tidyverse)
 
 #Testing pull-push to GitHub
 #Re-testing push pull after connecting to GitHub completed
-#Here's and example of a conflict
+
+# When a conflict happens
