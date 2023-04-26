@@ -21,3 +21,4 @@ library(tidyverse)
 #Re-testing push pull after connecting to GitHub completed
 
 # When a conflict happens
+
