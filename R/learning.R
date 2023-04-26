@@ -118,3 +118,34 @@ nhanes_bp <- nhanes_small %>%
 # Complete. Console output: styler::style_active_file()
 # 6. Lastly, add and commit these changes to the Git history with the '
 # RStudio Git interface (Ctrl-Shift-P, then type “commit”).
+
+
+# Filtering. Filter or subset data based on the data contained inside rows
+# To do so, we need to understand logic. Meaning that we need to understand how
+# a computer looks at logic; is it TRUE or FALSE?
+# Table 7.1 contains information on logical operators in R
+
+# Examples
+# Participants who are not physically active (has answered "no")
+nhanes_small %>%
+    filter(phys_active == "No")
+# Participants who have BMI equal to 25
+nhanes_small %>%
+    filter(bmi == 25)
+# Participants who have BMI equal to or more than 25
+nhanes_small %>%
+    filter(bmi >= 25) #always size before =
+
+
+# Combining logical operators
+# We use the | (“or”) and & (“and”) when we want to combine conditions across
+# columns. Be careful with these operators and when combining logic conditions,
+# as they can sometimes work differently than our human brains interpret them
+# (speaking from experience).
+# When BMI is 25 or above AND phys_active is No
+nhanes_small %>%
+    filter(bmi >= 25 & phys_active == "No")
+#For &, both sides must be TRUE in order for the combination to be TRUE.
+# For |, only one side needs to be TRUE in order for the combination to be TRUE.
+nhanes_small %>%
+    filter(bmi>=25 | phys_active=="No")
