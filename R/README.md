@@ -6,4 +6,5 @@ sections (e.g. with RStudio's 'Insert Section' with Ctrl-Shift-R) by
 utility or purpose. You can use the 'Document Outline' (Ctrl-Shift-O)
 to see the sections and functions.
 
-Randomwordhere
+
+Blahblah
