@@ -5,25 +5,42 @@ format: html
 editor: visual
 ---
 
+To get code chunk: ctrl+alt+i
 
-## Quarto
+Create a new code chunk and then type setup right after the r. This section can be used to load packages and data
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. <!-- Render by clicking render or ctrl+shift+k (the old knit) --> 
-You can embed code like this:
-
-```{r}
-1 + 1
+```{r setup}
+#| message:false
+#| warning:false
+library(tidyverse)
+library(NHANES)
+nhanes_small <- read_csv(here::here("data/nhanes_small.csv"))
 ```
-
-You can add options to executable code like this
-
+<!-- #| include:false will only run the code but not print anything in your document -->
+Options added in the code chunk ony works for that specific code chunk and not for the others. If you want to add options for the whole document, they should be added in the YAML header instead as:
+title: "Reproducible documents"
+author: "Your Name"
+format: html
+execute:
+  echo: false
+  warning: false
+  message: false
+  
+  
 ```{r}
-#| echo: false
-2 * 2
+nhanes_small
 ```
+## Table of results
 
-The `echo: false` option disables the printing of code (only output is displayed).
+```{r mean-age-bmi-table}
+# always insert an empty line after header before making new code chunk
+nhanes_small %>%
+  filter(!is.na(diabetes), !is.na(education)) %>%
+  group_by(diabetes, education) %>%
+  summarise(
+    mean_age = mean(age, na.rm = TRUE),
+    mean_bmi = mean(bmi, na.rm = TRUE)
+  ) %>%
+  ungroup() %>% # good practice to remember to ungroup things
+  knitr::kable(caption = "Mean values of Age and BMI for education and diabetes status")
+```
