@@ -196,3 +196,37 @@ nhanes_modified
 
 # Finally, add and commit these changes to the Git history with the RStudio
 # Git Interface. Push to GitHub to synchronize with your GitHub repository.
+
+
+# Calculating summary statistics
+nhanes_small %>%
+    summarise(max_bmi = max(bmi)) #max() is a function in R
+# We get back a result of NA, which means “missing”. In R, NA values
+# “propagate”, meaning that if there is one value missing, then the max or
+# mean will also be missing. So, we need to tell max() to exclude any NA
+# values from the calculation using the argument na.rm = TRUE.
+
+nhanes_small %>%
+    summarise(max_bmi = max(bmi, na.rm = TRUE),
+              min_bmi = min(bmi, na.rm = TRUE)) #na.rm = TRUE <-- remove all
+# missing values before running the command
+
+# Split apply combine
+nhanes_small %>%
+    group_by(diabetes) %>%
+    summarise(mean_age=mean(age, na.rm=TRUE),
+              mean_bmi=mean(bmi, na.rm=TRUE))
+#this gives a NA in the outcome, but we can filter the NA out by adding a filter
+#to the code:
+nhanes_small %>%
+    filter(!is.na(diabetes)) %>% #shows all results where diabetes is not NA
+    group_by(diabetes) %>%
+    summarise(mean_age=mean(age, na.rm=TRUE),
+              mean_bmi=mean(bmi, na.rm=TRUE)) %>% #This has grouped the data,
+    ungroup() # it is good custom to combine data again
+
+
+# Saving data
+readr::write_csv(nhanes_small, here::here("data/nhanes_small.csv"))
+    #Saves nhanes_small as csv in data folder
+
