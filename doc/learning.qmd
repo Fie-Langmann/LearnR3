@@ -12,7 +12,8 @@ Quarto enables you to weave together content and executable code into a finished
 
 ## Running Code
 
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. <!-- Render by clicking render or ctrl+shift+k (the old knit) --> You can embed code like this:
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. <!-- Render by clicking render or ctrl+shift+k (the old knit) --> 
+You can embed code like this:
 
 ```{r}
 1 + 1
