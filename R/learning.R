@@ -177,3 +177,22 @@ nhanes_small %>%
 nhanes_small %>%
     mutate(old=if_else(age>=30, "Yes", "No")) #if_else is the logical condition
 styler::style_active_file()
+
+
+
+# Exercise 7.12
+#   Copy and paste the code below into the learning.R script file.
+# 1. BMI between 20 and 40 with diabetes
+nhanes_small %>% # Format should follow: variable >= number or character
+    filter(bmi>=20& bmi<= 40 & diabetes == "Yes")
+
+# Pipe the data into mutate function and:
+nhanes_modified <- nhanes_small %>% # Specifying dataset
+    mutate(mean_arterial_pressure=((2*bp_dia_ave)+bp_sys_ave)/3,
+           young_child=if_else(age<=6, "Yes", "No")
+    )
+nhanes_modified
+
+
+# Finally, add and commit these changes to the Git history with the RStudio
+# Git Interface. Push to GitHub to synchronize with your GitHub repository.
