@@ -149,3 +149,31 @@ nhanes_small %>%
 # For |, only one side needs to be TRUE in order for the combination to be TRUE.
 nhanes_small %>%
     filter(bmi>=25 | phys_active=="No")
+
+
+# Arranging data
+    # arrange ascending by age
+nhanes_small %>%
+    arrange(age)
+    # arrange descending by age
+nhanes_small %>%
+    arrange(desc(age))
+    #multiple columns
+nhanes_small %>%
+    arrange(education, age)
+# Arranging is only visually, not saved in data
+
+
+# Transforming data
+    #Add column using mutate
+nhanes_small %>%
+    mutate(age= age*12) #this will overwrite age with age*12 (age in months)
+    #Multiple mutations
+nhanes_small %>%
+    mutate(age=age*12,
+           log_bmi=log(bmi))
+
+# We can also add a logical condition inside mutate
+nhanes_small %>%
+    mutate(old=if_else(age>=30, "Yes", "No")) #if_else is the logical condition
+styler::style_active_file()
