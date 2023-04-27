@@ -76,9 +76,18 @@ nhanes_small %>%
 Hint: You can rename columns to include spaces by using " around the new column name (e.g. "Diabetes Status" = diabetes). Don’t forget, the renaming form is new = old.
 
 5. Run styler on the document (Ctrl-Shift-P, then type “style file”).
-```{r}
-styler:::style_active_file()
-```
 
 6. Render the document to HTML (Ctrl-Shift-K for “Knit” or Ctrl-Shift-P, then type “render”) and see what the table looks like.
-6. End the exercise by adding, committing, and pushing the files to your GitHub repository (Ctrl-Shift-P, then type “commit”).
+
+7. End the exercise by adding, committing, and pushing the files to your GitHub repository (Ctrl-Shift-P, then type “commit”).
+
+
+### Adding a picture
+Fresh apple in @fig-apple-mirror!
+
+![Apple in mirror by [VĂN HỒNG PHÚC BÙI](https://pixabay.com/da/users/martinophuc-13713779/) on Pixabay](images/apple.jpg){#fig-apple-mirror width="50%" height="50%"} 
+
+the image path will need to be in the same folder as the qmd file. Otherwise the document will not render.
+
+
+
