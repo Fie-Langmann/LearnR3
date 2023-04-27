@@ -16,20 +16,15 @@ library(tidyverse)
 library(NHANES)
 nhanes_small <- read_csv(here::here("data/nhanes_small.csv"))
 ```
-<!-- #| include:false will only run the code but not print anything in your document -->
-Options added in the code chunk ony works for that specific code chunk and not for the others. If you want to add options for the whole document, they should be added in the YAML header instead as:
-title: "Reproducible documents"
-author: "Your Name"
-format: html
-execute:
-  echo: false
-  warning: false
-  message: false
-  
-  
+
+"#| include:false" will only run the code but not print anything in your document -->
+
+Options added in the code chunk only works for that specific code chunk and not for the others. If you want to add options for the whole document, they should be added in the YAML header instead as: title: "Reproducible documents" author: "Your Name" format: html execute: echo: false warning: false message: false
+
 ```{r}
 nhanes_small
 ```
+
 ## Table of results
 
 ```{r mean-age-bmi-table}
@@ -44,3 +39,46 @@ nhanes_small %>%
   ungroup() %>% # good practice to remember to ungroup things
   knitr::kable(caption = "Mean values of Age and BMI for education and diabetes status")
 ```
+
+
+# Exercise 8.6
+
+1. In the doc/learning.qmd file, create a new header called ## Prettier table along with a code chunk and label it prettier-table. Copy the code below (that we wrote above) and paste the code into the new chunk. Add the option #| echo: false to the code chunk.
+
+## Prettier table
+```{r prettier-table}
+#| echo:false
+nhanes_small %>%
+  filter(!is.na(diabetes), !is.na(education)) %>%
+  group_by(diabetes, education) %>%
+  summarise(
+    mean_age = mean(age, na.rm = TRUE),
+    mean_bmi = mean(bmi, na.rm = TRUE)
+  ) %>%
+  ungroup() %>%
+  mutate(
+    # Task 2a. round() to 1 digit
+    mean_age = round(mean_age, 1),
+    mean_bmi = round(mean_bmi, 1),
+    # Task 2b. str_to_sentence() to capitalize the first letter of the words in education column.
+    education = str_to_sentence(education)
+  ) %>%
+  rename(
+    # Task 3.
+    "Diabetes status" = diabetes,
+    Education = education,
+    "Mean Age" = mean_age,
+    "Mean BMI" = mean_bmi
+  ) %>%
+  knitr::kable(caption = "Rounded mean values of Age and BMI for each education and diabetes status.")
+```
+
+Hint: You can rename columns to include spaces by using " around the new column name (e.g. "Diabetes Status" = diabetes). Don’t forget, the renaming form is new = old.
+
+5. Run styler on the document (Ctrl-Shift-P, then type “style file”).
+```{r}
+styler:::style_active_file()
+```
+
+6. Render the document to HTML (Ctrl-Shift-K for “Knit” or Ctrl-Shift-P, then type “render”) and see what the table looks like.
+6. End the exercise by adding, committing, and pushing the files to your GitHub repository (Ctrl-Shift-P, then type “commit”).
