@@ -491,3 +491,72 @@ nhanes_small %>%
 
 
 5. Run styler. Then commit the changes to the R Markdown file into the Git history.
+
+## 9.9. Titles, axis labels, and themes
+
+There are so many options in RStudio to modify a ggplot2 figure. Almost all of them are found in the theme() function. 
+We’ll cover a few of the built-in themes, as well as setting the axes labels and plot title. We’ll create base graph object to work with created base_scatterplot. All built-in themes start with theme_.
+
+### Changing plot appearance
+
+```{r}
+# Create scatterplot to play with themes
+base_scatterplot <- nhanes_small %>%
+  filter(!is.na(diabetes), !is.na(education)) %>%
+  ggplot(aes(x = bmi, y = bp_sys_ave, colour = age)) +
+  geom_point(na.rm = TRUE) +
+  facet_grid(
+    rows = vars(diabetes),
+    cols = vars(education)
+  ) +
+  scale_color_viridis_c()
+
+# View the plot with the default theme
+base_scatterplot
+```
+
+```{r}
+# Test out some pre-defined themes
+base_scatterplot + theme_bw()
+```
+
+```{r}
+base_scatterplot + theme_minimal()
+```
+
+```{r}
+base_scatterplot + theme_classic()
+```
+
+You can also set the theme for all subsequent plots by using the theme_set() function, and specifying the theme you want in the parenthesis.
+```{r}
+# Set the theme for all subsequent plots
+theme_set(theme_bw())
+```
+
+
+
+To add labels such as axis titles to your plot, you can use the function labs(). To change the y-axis title, use the y argument in labs(). For the x-axis, it is x. For the whole plot, it is title.
+
+```{r}
+# Add plot title and change axis titles
+base_scatterplot +
+  labs(
+    title = "BMI, systolic blood pressure, and age by diabetes and education",
+    y = "Systolic Blood Pressure (mmHg)",
+    x = "BMI (kg/m2)"
+  )
+```
+
+### Saving the plots
+To save the plot you created, use the ggsave() function. The first argument says where to save the graph. Give the name of the newly created file, as well as the folder location. The next argument says which plot to save. At this point, you can set the dimensions of the figure using the width and height arguments. 
+```{r}
+# Save the plot
+ggsave(here::here("doc/images/scatterplot.pdf"),
+  base_scatterplot,
+  width = 7, height = 5
+)
+```
+
+
+Run styler and commit
