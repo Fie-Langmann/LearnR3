@@ -285,3 +285,70 @@ geom_violin is great when there is a lot of data and geom_jitter() may otherwise
 
 Style document 
 
+
+
+## Exercise 9.5: Creating plots with one or two variables
+
+For each task below, create a new code chunk for it. Copy and paste the template code shown in each task into its own code chunk. When you complete each task, run styler and render the document to make sure it works and to see the output.
+Complete as many tasks as you can below.
+
+1. Start with the original NHANES dataset to have access to more variables.
+```{r}
+library(NHANES)
+nhanes_exercise <- NHANES %>%
+  rename_with(snakecase::to_snake_case) %>%
+  rename(sex = gender)
+```
+
+Run styler 
+
+2. With the nhanes_exercise data, use geom_density() to show the distribution of age (participant’s age at collection) and diabetes_age (age of diabetes diagnosis) in two separate, side-by-side plots, but inside one code chunk. Use #| layout-ncol, along with #| label, #| fig-cap and #| fig-subcap, to have the two plots be side by side. Don’t forget to use na.rm = TRUE in the geom.
+
+```{r}
+#| label: fig-age-diagnosis-density
+#| fig-cap: "Distribution of age at data collection and age of diabetes diagnosis separately"
+#| fig-subcap:
+#|   - "Age at data collection"
+#|   - "Age at diabetes diagnosis"
+#| layout-ncol: 2
+
+ggplot(nhanes_exercise, aes(x = age)) +
+  geom_density(na.rm = TRUE)
+
+ggplot(nhanes_exercise, aes(x = diabetes_age)) +
+  geom_density(na.rm = TRUE)
+```
+
+Run styler
+
+
+3. With nhanes_exercise, use filter() and geom_bar() to find out how many people there who currently smoke (smoke_now) and who are at or above the age or 20. Drop missing values (!is.na()) from smoke_now. What can you say about how many smoke in this age group? Use #| label and #| fig-cap to be able to reference it in the Quarto document and have a caption. Render (Ctrl-Shift-K for “Knit” or Ctrl-Shift-P, then type “render”) the document to make sure it works and to see the output.
+
+```{r}
+#| label: fig-smokers-above-twenty
+#| fig-cap: "Distribution of participants above 20 years of age in current smokers or not current smokers"
+# Number of people who smoke now and are or above 20 years of age, removing those with missing smoking status.
+nhanes_exercise %>%
+  filter(age >= 20, !is.na(smoke_now)) %>%
+  ggplot(aes(x = smoke_now)) +
+  geom_bar()
+```
+
+Run styler
+
+4. Mean arterial pressure is a blood pressure measure used to determine the average pressure arteries experience through a typical cardiac cycle. The formula to calculate it is: (systolic + 2 x diastolic)/3
+
+Use mutate() to create a new column called mean_arterial_pressure using this formula above. The code template below will help you start out. Then, use geom_hex() and add another layer for geom_smooth() to find out how bmi (on the x-axis) relates to mean_arterial_pressure (on the y-axis). Do you notice anything about the data from the plots?
+
+```{r}
+# BMI in relation to mean arterial pressure
+nhanes_exercise %>%
+  mutate(mean_arterial_pressure = (bp_sys_ave + 2 * bp_dia_ave) / 3) %>%
+  ggplot(aes(x = bmi, y = mean_arterial_pressure)) +
+  geom_hex(na.rm = TRUE) +
+  geom_smooth()
+```
+
+Run styler
+
+5. End with adding and committing the changes to the Git history 
