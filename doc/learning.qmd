@@ -17,7 +17,7 @@ library(NHANES)
 nhanes_small <- read_csv(here::here("data/nhanes_small.csv"))
 ```
 
-"#| include:false" will only run the code but not print anything in your document -->
+"#\| include:false" will only run the code but not print anything in your document --\>
 
 Options added in the code chunk only works for that specific code chunk and not for the others. If you want to add options for the whole document, they should be added in the YAML header instead as: title: "Reproducible documents" author: "Your Name" format: html execute: echo: false warning: false message: false
 
@@ -40,12 +40,12 @@ nhanes_small %>%
   knitr::kable(caption = "Mean values of Age and BMI for education and diabetes status")
 ```
 
-
 # Exercise 8.6
 
-1. In the doc/learning.qmd file, create a new header called ## Prettier table along with a code chunk and label it prettier-table. Copy the code below (that we wrote above) and paste the code into the new chunk. Add the option #| echo: false to the code chunk.
+1.  In the doc/learning.qmd file, create a new header called \## Prettier table along with a code chunk and label it prettier-table. Copy the code below (that we wrote above) and paste the code into the new chunk. Add the option #\| echo: false to the code chunk.
 
 ## Prettier table
+
 ```{r prettier-table}
 #| echo:false
 nhanes_small %>%
@@ -73,21 +73,120 @@ nhanes_small %>%
   knitr::kable(caption = "Rounded mean values of Age and BMI for each education and diabetes status.")
 ```
 
-Hint: You can rename columns to include spaces by using " around the new column name (e.g. "Diabetes Status" = diabetes). Don’t forget, the renaming form is new = old.
+Hint: You can rename columns to include spaces by using " around the new column name (e.g. "Diabetes Status" = diabetes). Don't forget, the renaming form is new = old.
 
-5. Run styler on the document (Ctrl-Shift-P, then type “style file”).
+5.  Run styler on the document (Ctrl-Shift-P, then type "style file").
 
-6. Render the document to HTML (Ctrl-Shift-K for “Knit” or Ctrl-Shift-P, then type “render”) and see what the table looks like.
+6.  Render the document to HTML (Ctrl-Shift-K for "Knit" or Ctrl-Shift-P, then type "render") and see what the table looks like.
 
-7. End the exercise by adding, committing, and pushing the files to your GitHub repository (Ctrl-Shift-P, then type “commit”).
-
+7.  End the exercise by adding, committing, and pushing the files to your GitHub repository (Ctrl-Shift-P, then type "commit").
 
 ### Adding a picture
+
 Fresh apple in @fig-apple-mirror!
 
-![Apple in mirror by [VĂN HỒNG PHÚC BÙI](https://pixabay.com/da/users/martinophuc-13713779/) on Pixabay](images/apple.jpg){#fig-apple-mirror width="50%" height="50%"} 
+![Apple in mirror by [VĂN HỒNG PHÚC BÙI](https://pixabay.com/da/users/martinophuc-13713779/) on Pixabay](images/apple.jpg){#fig-apple-mirror width="50%" height="50%"}
 
 the image path will need to be in the same folder as the qmd file. Otherwise the document will not render.
 
+## Visualizing data
 
+```{r}
+# Create histogram for BMI
+ggplot(nhanes_small, aes(x = bmi)) +
+  geom_histogram()
+```
+
+You'll notice we get a warning about dropping missing values. That's ggplot2 letting us know we have some missing values. So, like with median() and many of the other summary statistic functions, we can set na.rm = TRUE to geom_histogram() and other geom\_\* functions.
+
+```{r}
+# Create histogram for BMI without missing values
+ggplot(nhanes_small, aes(x = bmi)) +
+  geom_histogram(na.rm = TRUE)
+```
+
+We can use dplyr functions to remove anything above BMI=60. Because we are piping the results into ggplot(), we can use aes() right away rather than put in the data object to the first argument position.
+
+```{r}
+nhanes_small %>%
+  filter(bmi <= 60) %>%
+  ggplot(aes(x = bmi)) +
+  geom_histogram(na.rm = TRUE)
+```
+
+We can add captions and figure labels, so we can reference the figure in the text. Caption can be added with the option #\| fig-cap. Figure label with #\| label so we can reference it in the text by using "@fig-LABEL". Figure labels must always start with fig-.
+
+BMI distribution in NHANES data set was visualized in @fig-bmi-histo
+
+```{r}
+#| fig-cap: "Distribution of BMI"
+#| label: fig-bmi-histo
+nhanes_small %>%
+  filter(bmi <= 60) %>%
+  ggplot(aes(x = bmi)) +
+  geom_histogram(na.rm = TRUE)
+```
+
+Geom_ are suitable for plotting continuous variables. When plotting discrete (categorical) variables sadly, there’s really only one: geom_bar(). This isn’t a geom for a barplot though; instead, it shows the counts of a discrete variable. There are many discrete variables in NHANES, including education and diabetes, so let’s use this geom to visualize those. 
+
+```{r}
+# Create count barplot for education
+ggplot(nhanes_small, aes(x = education)) +
+  geom_bar()
+```
+
+We can’t use na.rm = TRUE here because geom_bar() includes the NA information as a bar. But we can filter NA's out of the data
+```{r}
+nhanes_small %>%
+  filter(!is.na(education)) %>%
+  ggplot(aes(x = education)) +
+  geom_bar()
+```
+
+
+We can do the same two steps for diabetes status
+```{r}
+# Create count barplot for diabetes status
+ggplot(nhanes_small, aes(x = diabetes)) +
+  geom_bar()
+```
+
+
+```{r}
+# Count barplot for diabetes status without NA's
+nhanes_small %>%
+  filter(!is.na(diabetes)) %>%
+  ggplot(aes(x = diabetes)) +
+  geom_bar()
+```
+
+With Quarto, we can arrange them side by side in the output document by using the #| layout-ncol (or #| layout-nrow or #| layout). We can then combine it with captions and sub-captions using #| fig-subcap to have a nice output
+```{r}
+#| label: fig-diabetes-education
+#| fig-cap: "Counts of Diabetes and Education."
+#| fig-subcap:
+#|   - "Number of those with or without Diabetes."
+#|   - "Number of those with different educational status."
+#| layout-ncol: 2
+nhanes_small %>%
+  filter(!is.na(diabetes)) %>%
+  ggplot(aes(x = diabetes)) +
+  geom_bar()
+
+nhanes_small %>%
+  filter(!is.na(education)) %>%
+  ggplot(aes(x = education)) +
+  geom_bar()
+```
+
+**Code explanation**
+fig-subcap should be provided in the order, that the plots are created in the code chunk. Subcap or cap with more than one word (like example above) should be stated with "  ".
+layout-ncol: 2 will provide plots side by side
+
+*Brief on barplots*
+Barplots should only be used for discrete (categorical) data where you want to show counts or proportions.
+
+Run styler: ctrl+shift+p
+
+Type: style active file
 
