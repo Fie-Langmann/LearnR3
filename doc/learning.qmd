@@ -433,3 +433,61 @@ nhanes_small %>%
 ```
 
 Run styler
+
+
+### Exercise 9.8: Changing the colour scheme
+
+Practice changing colour schemes on a bar plot. Start with a base plot object to work from that has two discrete variables. Create a new Markdown header called ## Exercise for changing colours and create a new code chunk (Ctrl-Alt-I for “Insert” or Ctrl-Shift-P, then type “chunk”) below it. Copy and paste the code below into the new code chunk.
+
+Use the scale_fill_ function set to add the colour scheme. If you need help, use the help() or ? functions in RStudio to look over the documentation for more information or to see the other scale_ functions. Use tab auto-completion to find the correct function.
+
+1. Change the colour to the viridis scheme with the scale_fill_viridis_d() function, added to the end of the ggplot2 code so that the plot is colour blind friendly. Because the variables are discrete, you will need to add _d to the end of the viridis function.
+```{r}
+# 1.
+nhanes_small %>%
+  filter(!is.na(diabetes), !is.na(education)) %>%
+  ggplot(aes(x = diabetes, fill = education)) +
+  geom_bar(position = position_dodge()) +
+  scale_fill_viridis_d()
+```
+
+2. viridis has several palettes. Add the argument option = "magma" to the scale_fill_viridis_d() function. Run the function again and see how the colour changes. Then, change "magma" to "cividis".
+```{r}
+# 2. magma
+nhanes_small %>%
+  filter(!is.na(diabetes), !is.na(education)) %>%
+  ggplot(aes(x = diabetes, fill = education)) +
+  geom_bar(position = position_dodge()) +
+  scale_fill_viridis_d(option = "magma")
+```
+
+```{r}
+# 2. cividis
+nhanes_small %>%
+  filter(!is.na(diabetes), !is.na(education)) %>%
+  ggplot(aes(x = diabetes, fill = education)) +
+  geom_bar(position = position_dodge()) +
+  scale_fill_viridis_d(option = "cividis")
+```
+
+3. Now, let’s practice using the colour schemes on a plot with continuous variables. Copy and paste the code below into the code chunk. Since we are using colour instead of fill, the scale_ will be scale_colour_viridis_c(). The _c at the end indicates the variable are continuous.
+```{r}
+# Scatterplot with three continuous variables
+nhanes_small %>%
+  ggplot(aes(x = bmi, y = bp_sys_ave, colour = age)) +
+  geom_point(na.rm = TRUE) +
+  scale_colour_viridis_c()
+```
+
+4. Similar to task 2 above, use the option argument to set the palette to "inferno" and see how the colour changes. Select which colour scheme you would like.
+
+```{r}
+# Scatterplot with three continuous variables with colour options
+nhanes_small %>%
+  ggplot(aes(x = bmi, y = bp_sys_ave, colour = age)) +
+  geom_point(na.rm = TRUE) +
+  scale_colour_viridis_c(option = "inferno")
+```
+
+
+5. Run styler. Then commit the changes to the R Markdown file into the Git history.
