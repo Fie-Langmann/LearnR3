@@ -91,13 +91,15 @@ the image path will need to be in the same folder as the qmd file. Otherwise the
 
 ## Visualizing data
 
+### Plotting one variable
+
 ```{r}
 # Create histogram for BMI
 ggplot(nhanes_small, aes(x = bmi)) +
   geom_histogram()
 ```
 
-You'll notice we get a warning about dropping missing values. That's ggplot2 letting us know we have some missing values. So, like with median() and many of the other summary statistic functions, we can set na.rm = TRUE to geom_histogram() and other geom\_\* functions.
+You'll notice we get a warning about dropping missing values. That's ggplot2 letting us know we have some missing values. So, like with median() and many of the other summary statistic functions, we can set na.rm = TRUE to geom_histogram() and other geom_* functions.
 
 ```{r}
 # Create histogram for BMI without missing values
@@ -114,7 +116,7 @@ nhanes_small %>%
   geom_histogram(na.rm = TRUE)
 ```
 
-We can add captions and figure labels, so we can reference the figure in the text. Caption can be added with the option #\| fig-cap. Figure label with #\| label so we can reference it in the text by using "@fig-LABEL". Figure labels must always start with fig-.
+We can add captions and figure labels, so we can reference the figure in the text. Caption can be added with the option #| fig-cap. Figure label with #| label so we can reference it in the text by using "@fig-LABEL". Figure labels must always start with fig-.
 
 BMI distribution in NHANES data set was visualized in @fig-bmi-histo
 
@@ -189,4 +191,97 @@ Barplots should only be used for discrete (categorical) data where you want to s
 Run styler: ctrl+shift+p
 
 Type: style active file
+
+
+### Plotting two variables
+
+When you have two continuous variables, some geoms to use are:
+
+- geom_hex(), which is used to replace geom_point() when your data are massive and creating points for each value takes too long to plot. Because we have a lot of data, we will show this one.
+- geom_point(), which is used to create a standard scatterplot. You’ll use this one in the exercise, it is used the same way as other geoms.
+- geom_smooth(), which applies a “regression-type” line to the data (default uses LOESS regression).
+
+```{r}
+#| label: fig-bmi-bp-twoplots
+#| fig-cap: "Association between BMI and systolic blood pressure presented with geom_hex and geom_point "
+#| fig-subcap:
+#|   - "Presented with geom_hex."
+#|   - "Presented with geom_point."
+#| layout-ncol: 2
+ggplot(nhanes_small, aes(x = bmi, y = bp_sys_ave)) +
+  geom_hex(na.rm = TRUE)
+
+ggplot(nhanes_small, aes(x = bmi, y = bp_sys_ave)) +
+  geom_point(na.rm = TRUE)
+```
+
+We can also add a regression-like line to get information on the association
+
+```{r}
+#| label: fig-bmi-bp-twoplots-smooth
+#| fig-cap: "Association between BMI and systolic blood pressure presented with geom_hex and geom_point with smoothing line"
+#| fig-subcap:
+#|   - "Presented with geom_hex."
+#|   - "Presented with geom_point."
+#| layout-ncol: 2
+# Add a smoothing line with confidence intervals
+ggplot(nhanes_small, aes(x = bmi, y = bp_sys_ave)) +
+  geom_hex(na.rm = TRUE) +
+  geom_smooth(na.rm = TRUE)
+
+ggplot(nhanes_small, aes(x = bmi, y = bp_sys_ave)) +
+  geom_point(na.rm = TRUE) +
+  geom_smooth(na.rm = TRUE)
+```
+
+**Plotting two categorical variables**
+```{r}
+# Diabetes and education
+# Note that we can pipe data into ggplot
+nhanes_small %>%
+  filter(!is.na(education), !is.na(diabetes)) %>%
+  ggplot(aes(x = diabetes, fill = education)) +
+  geom_bar()
+```
+
+*Code explanation*
+
+In the ggplot we can define fill as an option to use colors to visualize the distribution of another variable (education in example above) in the bars of the first defined variable (x=)
+
+The fill option can also be plotted side by side:
+```{r}
+# "dodged" (side-by-side) bar plot
+nhanes_small %>%
+  filter(!is.na(education), !is.na(diabetes)) %>%
+  ggplot(aes(x = diabetes, fill = education)) +
+  geom_bar(position = position_dodge())
+```
+
+*Code explanation*
+
+position is an option to tell how the bars are presented in the plot; position_dodge indicates that we're plotting the bars dodged, meaning side-by-side, instead of stacking
+
+
+### Plotting mixed variable types; continuous and categorical
+```{r}
+# geom_jitter() makes a type of scatterplot, but for discrete and continuous variables
+nhanes_small %>%
+  filter(!is.na(education)) %>%
+  ggplot(aes(x = education, y = bmi)) +
+  geom_jitter()
+```
+
+
+```{r}
+# geom_violin() shows a density distribution
+nhanes_small %>%
+  filter(!is.na(diabetes), bmi <= 60) %>%
+  ggplot(aes(x = diabetes, y = bmi)) +
+  geom_violin(na.rm = TRUE)
+```
+
+*Code explanation*
+geom_violin is great when there is a lot of data and geom_jitter() may otherwise appear as a mass of dots.
+
+Style document 
 
