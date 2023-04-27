@@ -352,3 +352,84 @@ nhanes_exercise %>%
 Run styler
 
 5. End with adding and committing the changes to the Git history 
+
+
+
+### Plotting three or more variables
+```{r}
+# Plot systolic blood pressure in relation to education and diabetes status. 2 categorical and one continuous
+nhanes_small %>%
+  filter(!is.na(diabetes), !is.na(education)) %>%
+  ggplot(aes(x = education, y = bp_sys_ave, colour = diabetes)) +
+  geom_boxplot(na.rm = TRUE)
+```
+
+*Code explanation*
+
+Colour works in the same way as fill but instead of filling the boxplots, colour will colour the outline and dots for the boxplots.
+
+
+```{r}
+# Plot BMI in relation to systolic blood pressure and age. Three continuous variables
+nhanes_small %>%
+  ggplot(aes(x = bmi, y = bp_sys_ave, colour = age)) +
+  geom_point(na.rm = TRUE)
+```
+
+*Code explanation*
+
+In continuous data the fill option does not work and should instead be colour. Colour doesn't work with geom_hex, as hex will show the count in colour.
+
+```{r}
+# Plot BMI in relation to systolic blood pressure and diabetes status. Two continuous and one categorical
+nhanes_small %>%
+  filter(!is.na(diabetes)) %>%
+  ggplot(aes(x = bmi, y = bp_sys_ave, colour = diabetes)) +
+  geom_point(na.rm = TRUE)
+```
+
+
+### Plotting with faceting
+
+There is another way of visualizing a third (or fourth, and fifth) variable: with “faceting”! Faceting splits the plot up into multiple subplots using the function facet_grid(). For faceting to work, at least one of the first two arguments to facet_grid() is needed.
+
+For both cols and rows, the nominated variable must be wrapped by vars() (e.g. vars(diabetes)). Let’s try it using an example from the previous answer (instead of using colour).
+
+```{r}
+# Plot BMI in relation to systolic blood pressure and diabetes status using
+# faceting by column
+nhanes_small %>%
+  filter(!is.na(diabetes)) %>%
+  ggplot(aes(x = bmi, y = bp_sys_ave)) +
+  geom_point(na.rm = TRUE) +
+  facet_grid(cols = vars(diabetes))
+```
+
+Try faceting with plots stacked by diabetes status, using the argument rows = vars(diabetes) instead. Which do you find more informative?
+
+```{r}
+# faceting by row
+nhanes_small %>%
+  filter(!is.na(diabetes)) %>%
+  ggplot(aes(x = bmi, y = bp_sys_ave)) +
+  geom_point(na.rm = TRUE) +
+  facet_grid(rows = vars(diabetes))
+```
+
+The first faceting seem most easy to read.
+
+We can also facet by education and use age as a colour. We’ll have to filter() out those missing education values.
+
+```{r}
+# Plot BMI in relation to systolic blood pressure, age, education and diabetes status
+nhanes_small %>%
+  filter(!is.na(diabetes), !is.na(education)) %>%
+  ggplot(aes(x = bmi, y = bp_sys_ave, colour = age)) +
+  geom_point(na.rm = TRUE) +
+  facet_grid(
+    rows = vars(diabetes),
+    cols = vars(education)
+  )
+```
+
+Run styler
